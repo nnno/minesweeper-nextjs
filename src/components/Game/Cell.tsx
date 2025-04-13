@@ -17,6 +17,7 @@ const ADJACENT_MINE_COLORS = [
 // プロップスの型定義
 interface CellProps {
   cell: SquareNode;
+  cellSize?: string; // 動的なセルサイズをサポート
   onReveal: (x: number, y: number) => void;
   onFlag: (x: number, y: number) => void;
   onChord?: (x: number, y: number) => void; // 中クリック操作用（オプション）
@@ -26,7 +27,7 @@ interface CellProps {
  * セルコンポーネント
  * マインスイーパーの個々のセルを表示
  */
-const Cell: React.FC<CellProps> = ({ cell, onReveal, onFlag, onChord }) => {
+const Cell: React.FC<CellProps> = ({ cell, cellSize = 'w-8 h-8 md:w-10 md:h-10', onReveal, onFlag, onChord }) => {
   const { x, y, isRevealed, isFlagged, isMine, adjacentMines } = cell;
   const [isPressed, setIsPressed] = useState(false);
   const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -204,7 +205,8 @@ const Cell: React.FC<CellProps> = ({ cell, onReveal, onFlag, onChord }) => {
 
   // セルのスタイルを決定
   const getCellStyle = () => {
-    let baseStyle = "flex items-center justify-center w-8 h-8 md:w-10 md:h-10 select-none border border-gray-400 dark:border-gray-600 text-center transition-colors duration-150";
+    // 動的なセルサイズクラスを使用
+    let baseStyle = `flex items-center justify-center ${cellSize} select-none border border-gray-400 dark:border-gray-600 text-center transition-colors duration-150`;
     
     if (isRevealed) {
       if (isMine) {
