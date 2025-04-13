@@ -107,6 +107,7 @@ const GameBoard: React.FC = () => {
             <option value={Difficulty.BEGINNER}>初級 (9x9, 10地雷)</option>
             <option value={Difficulty.INTERMEDIATE}>中級 (16x16, 40地雷)</option>
             <option value={Difficulty.EXPERT}>上級 (16x30, 99地雷)</option>
+            <option value={Difficulty.CUSTOM}>カスタム</option>
           </select>
 
           <button
