@@ -149,7 +149,7 @@ export function countAdjacentMines(board: SquareNode[][], x: number, y: number):
 }
 
 /**
- * セルを開く处理
+ * セルを開く処理
  * @param board ボード
  * @param x X座標
  * @param y Y座標
