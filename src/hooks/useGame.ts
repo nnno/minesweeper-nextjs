@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { CellActionResult, Difficulty, GameSettings, GameStatus, SquareNode } from '../types';
-import { DIFFICULTY_SETTINGS, createEmptyBoard } from '../utils/gameHelpers';
+import { DIFFICULTY_SETTINGS, checkWinCondition, createEmptyBoard } from '../utils/gameHelpers';
 import { boardReducer } from '../reducers/boardReducer';
 
 export interface UseGameResult {
@@ -64,6 +64,18 @@ export function useGame(
       }
     };
   }, [status]);
+
+  // ボード状態の変更を監視し、勝利条件をチェックするためのuseEffect
+  useEffect(() => {
+    // ゲームがプレイ中の場合のみチェック
+    if (status === GameStatus.PLAYING) {
+      // 勝利条件をチェック - 全ての非地雷セルが開かれているか
+      const isWin = checkWinCondition(boardState.board);
+      if (isWin) {
+        setStatus(GameStatus.WON);
+      }
+    }
+  }, [boardState.board, status]);
 
   // ゲームリセット
   const resetGame = useCallback((
@@ -136,32 +148,9 @@ export function useGame(
       type: 'REVEAL_CELL',
       payload: { x, y }
     });
-
-    // 勝利条件チェック - 全ての非地雷セルが開かれている場合
-    // boardState.boardは最新ではないので、直接チェックできない
-    // 代わりに、非地雷セルの数と開かれたセルの数を比較する簡易的な方法を使用
-    const totalNonMineCells = settings.rows * settings.cols - minesCount;
-    let revealedNonMineCells = 0;
     
-    // 開かれたセルをカウント（現在のboardStateに基づく）
-    for (let ry = 0; ry < boardState.board.length; ry++) {
-      for (let rx = 0; rx < boardState.board[0].length; rx++) {
-        if (boardState.board[ry][rx].isRevealed && !boardState.board[ry][rx].isMine) {
-          revealedNonMineCells++;
-        }
-      }
-    }
-    
-    // 新しく開いたセルも含める（現在の操作で開かれるセル）
-    if (!currentCell.isMine) {
-      revealedNonMineCells++;
-    }
-
-    // 勝利条件チェック（簡易版）
-    if (revealedNonMineCells >= totalNonMineCells) {
-      setStatus(GameStatus.WON);
-    }
-  }, [status, isFirstClick, minesCount, boardState.board, settings.rows, settings.cols]);
+    // 注: 勝利条件のチェックはuseEffectで行うため、ここでは行わない
+  }, [status, isFirstClick, minesCount, boardState.board]);
 
   // フラグを切り替える
   const toggleFlag = useCallback((x: number, y: number) => {
