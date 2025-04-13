@@ -233,7 +233,7 @@ export function useGame(
         setStatus(GameStatus.LOST);
       }
     }
-  }, [status, boardState.board]);
+  }, [status, boardState.board, dispatch]); // dispatchを依存配列に追加
 
   // 残りの地雷数を計算（地雷総数 - フラグ数）
   const remainingMines = useMemo(() => {
