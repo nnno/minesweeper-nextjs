@@ -13,10 +13,10 @@ const Header: React.FC<HeaderProps> = ({ className = '' }) => {
         </div>
         
         <div className="flex items-center gap-4">
-          {/* 難易度選択は将来的に実装 */}
+          <label id="difficulty-label" className="sr-only">難易度選択</label>
           <select 
-            className="px-3 py-2 rounded bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600"
-            aria-label="難易度選択"
+            className="px-3 py-2 rounded bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-labelledby="difficulty-label"
             defaultValue="beginner"
           >
             <option value="beginner">初級 (9x9, 10地雷)</option>

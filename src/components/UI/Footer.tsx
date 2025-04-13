@@ -14,10 +14,26 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
           <p className="text-sm text-gray-600 dark:text-gray-300">
             &copy; {currentYear} マインスイーパー Next.js版
           </p>
-          <div className="flex gap-4 text-sm text-gray-500 dark:text-gray-400">
-            <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400">プライバシーポリシー</a>
-            <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400">お問い合わせ</a>
-          </div>
+          <nav aria-label="フッターナビゲーション">
+            <ul className="flex gap-4 text-sm text-gray-500 dark:text-gray-400">
+              <li>
+                <a 
+                  href="#" 
+                  className="hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+                >
+                  プライバシーポリシー
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="#" 
+                  className="hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+                >
+                  お問い合わせ
+                </a>
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
     </footer>
