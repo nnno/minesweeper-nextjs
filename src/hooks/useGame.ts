@@ -65,20 +65,6 @@ export function useGame(
     };
   }, [status]);
 
-  // 難易度変更
-  const changeDifficulty = useCallback((newDifficulty: Difficulty, newCustomSettings?: GameSettings) => {
-    const newSettings = newDifficulty === Difficulty.CUSTOM 
-      ? newCustomSettings! 
-      : DIFFICULTY_SETTINGS[newDifficulty];
-    
-    setDifficulty(newDifficulty);
-    setSettings(newSettings);
-    setMinesCount(newSettings.mines);
-    
-    // ゲームをリセット
-    resetGame(newDifficulty, newSettings);
-  }, []);
-
   // ゲームリセット
   const resetGame = useCallback((
     difficultyToUse: Difficulty = difficulty,
@@ -96,6 +82,20 @@ export function useGame(
     setIsFirstClick(true);
     setMinesCount(settingsToUse.mines);
   }, [difficulty, settings]);
+
+  // 難易度変更
+  const changeDifficulty = useCallback((newDifficulty: Difficulty, newCustomSettings?: GameSettings) => {
+    const newSettings = newDifficulty === Difficulty.CUSTOM 
+      ? newCustomSettings! 
+      : DIFFICULTY_SETTINGS[newDifficulty];
+    
+    setDifficulty(newDifficulty);
+    setSettings(newSettings);
+    setMinesCount(newSettings.mines);
+    
+    // ゲームをリセット
+    resetGame(newDifficulty, newSettings);
+  }, [resetGame]);
 
   // セルを開く
   const revealCell = useCallback((x: number, y: number) => {
