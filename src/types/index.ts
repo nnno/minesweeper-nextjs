@@ -115,6 +115,10 @@ export interface IGrid<T extends INode> {
    * 地雷を配置
    * @param count 配置する地雷の数
    * @param excludedNodeId 地雷を配置しないノードのID（最初のクリック位置）
+   * 
+   * 注: 具体的な実装（例: 四角形グリッド）では、
+   * このexcludedNodeIdはノードの座標（x, y）から生成されます。
+   * 四角形グリッドの場合、通常 "x,y" 形式の文字列として表現されます。
    */
   placeMines(count: number, excludedNodeId?: string): void;
 }
@@ -142,6 +146,11 @@ export interface BoardState {
 
 /**
  * ボードReducerのアクション型
+ * 
+ * 注: 以下のアクションタイプは具体的な四角形グリッド実装に特化しています。
+ * 'PLACE_MINES'アクションでは座標ベース（excludeX, excludeY）のパラメータを使用していますが、
+ * これは抽象インターフェース（IGrid.placeMines）がノードID（excludedNodeId）を使用するのと異なります。
+ * 実際の実装では、座標からノードIDへの変換（通常 `${x},${y}` 形式）が必要です。
  */
 export type BoardAction = 
   | { type: 'INITIALIZE_BOARD'; payload: { board: SquareNode[][] } }
