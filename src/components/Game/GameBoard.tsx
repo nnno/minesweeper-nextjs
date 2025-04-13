@@ -54,8 +54,27 @@ const GameBoard: React.FC = () => {
 
   // 難易度変更ハンドラー
   const handleDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    // 文字列の値を直接Difficultyとして使用（enumの値と一致させる）
-    const newDifficulty = Number(e.target.value) as unknown as Difficulty;
+    // 文字列値をマッピングしてDifficulty型に変換
+    const difficultyValue = Number(e.target.value);
+    let newDifficulty: Difficulty;
+    
+    switch (difficultyValue) {
+      case 0:
+        newDifficulty = Difficulty.BEGINNER;
+        break;
+      case 1:
+        newDifficulty = Difficulty.INTERMEDIATE;
+        break;
+      case 2:
+        newDifficulty = Difficulty.EXPERT;
+        break;
+      case 3:
+        newDifficulty = Difficulty.CUSTOM;
+        break;
+      default:
+        newDifficulty = Difficulty.BEGINNER; // デフォルト値
+    }
+    
     changeDifficulty(newDifficulty);
   };
 

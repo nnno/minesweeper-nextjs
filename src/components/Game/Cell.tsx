@@ -59,8 +59,10 @@ const Cell: React.FC<CellProps> = ({ cell, onReveal, onFlag }) => {
           </span>
         );
       } else if (adjacentMines > 0) {
+        // 有効なインデックス範囲内か確認（0-8）
+        const colorIndex = Math.min(Math.max(0, adjacentMines), 8);
         return (
-          <span className={`font-bold ${ADJACENT_MINE_COLORS[adjacentMines]}`}>
+          <span className={`font-bold ${ADJACENT_MINE_COLORS[colorIndex]}`}>
             {adjacentMines}
           </span>
         );
