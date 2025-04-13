@@ -7,13 +7,14 @@ interface BoardProps {
   board: SquareNode[][];
   onRevealCell: (x: number, y: number) => void;
   onFlagCell: (x: number, y: number) => void;
+  onChordCell?: (x: number, y: number) => void; // 追加: 中クリック処理関数
 }
 
 /**
  * ボードコンポーネント
  * マインスイーパーのゲームボードを表示し、セルを配置
  */
-const Board: React.FC<BoardProps> = ({ board, onRevealCell, onFlagCell }) => {
+const Board: React.FC<BoardProps> = ({ board, onRevealCell, onFlagCell, onChordCell }) => {
   if (!board || board.length === 0) {
     return <div className="text-center p-4">ボードが初期化されていません</div>;
   }
@@ -32,7 +33,7 @@ const Board: React.FC<BoardProps> = ({ board, onRevealCell, onFlagCell }) => {
 
   return (
     <div 
-      className="p-2 bg-gray-100 rounded shadow-md"
+      className="p-2 bg-gray-100 dark:bg-gray-800 rounded shadow-md"
       data-testid="minesweeper-board"
     >
       <div style={gridStyle}>
@@ -43,6 +44,7 @@ const Board: React.FC<BoardProps> = ({ board, onRevealCell, onFlagCell }) => {
               cell={cell}
               onReveal={onRevealCell}
               onFlag={onFlagCell}
+              onChord={onChordCell} // 追加: 中クリック処理関数を渡す
             />
           ))
         )}
@@ -51,4 +53,4 @@ const Board: React.FC<BoardProps> = ({ board, onRevealCell, onFlagCell }) => {
   );
 };
 
-export default Board;
+export default React.memo(Board); // パフォーマンス最適化のためにメモ化

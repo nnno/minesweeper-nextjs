@@ -17,6 +17,7 @@ const GameBoard: React.FC = () => {
     timer,
     revealCell,
     toggleFlag,
+    chordCell, // 中クリック処理関数を追加
     resetGame,
     changeDifficulty
   } = useGameContext();
@@ -138,6 +139,7 @@ const GameBoard: React.FC = () => {
           board={board}
           onRevealCell={revealCell}
           onFlagCell={toggleFlag}
+          onChordCell={chordCell} // 中クリック処理関数を渡す
         />
       </div>
 
@@ -145,6 +147,7 @@ const GameBoard: React.FC = () => {
       <div className="mt-6 p-3 bg-gray-100 rounded text-sm text-gray-700 w-full max-w-md">
         <p>左クリック: セルを開く</p>
         <p>右クリック: フラグを立てる/解除する</p>
+        <p>中クリック: 隣接セルを一括で開く</p>
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ export interface UseGameResult {
   timer: number;
   revealCell: (x: number, y: number) => void;
   toggleFlag: (x: number, y: number) => void;
+  chordCell: (x: number, y: number) => void; // 追加：中クリック操作の関数
   resetGame: () => void;
   changeDifficulty: (difficulty: Difficulty, customSettings?: GameSettings) => void;
 }
@@ -165,6 +166,75 @@ export function useGame(
     });
   }, [status]);
 
+  // 中クリック操作（コード）- 隣接セルの一括オープン
+  const chordCell = useCallback((x: number, y: number) => {
+    // 準備中またはプレイ中以外は何もしない
+    if (status !== GameStatus.PLAYING) {
+      return;
+    }
+
+    const cell = boardState.board[y][x];
+    
+    // 開いていないセルや数字がないセルでは動作しない
+    if (!cell.isRevealed || cell.adjacentMines === 0) {
+      return;
+    }
+
+    // 隣接するセルを取得
+    const adjacentCells: { x: number, y: number }[] = [];
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if (dx === 0 && dy === 0) continue;
+        
+        const nx = x + dx;
+        const ny = y + dy;
+        
+        // ボード範囲内かチェック
+        if (nx >= 0 && nx < boardState.board[0].length && ny >= 0 && ny < boardState.board.length) {
+          adjacentCells.push({ x: nx, y: ny });
+        }
+      }
+    }
+    
+    // 隣接するフラグの数をカウント
+    const flaggedCount = adjacentCells.reduce((count, { x: nx, y: ny }) => {
+      return boardState.board[ny][nx].isFlagged ? count + 1 : count;
+    }, 0);
+    
+    // フラグの数が隣接地雷数と一致する場合のみ動作
+    if (flaggedCount === cell.adjacentMines) {
+      // フラグのないすべての隣接セルを開く
+      let hitMine = false;
+      
+      for (const { x: nx, y: ny } of adjacentCells) {
+        const adjacentCell = boardState.board[ny][nx];
+        
+        // フラグがなく、まだ開かれていないセルのみを開く
+        if (!adjacentCell.isFlagged && !adjacentCell.isRevealed) {
+          // 地雷をヒットした場合
+          if (adjacentCell.isMine) {
+            hitMine = true;
+            dispatch({
+              type: 'REVEAL_CELL',
+              payload: { x: nx, y: ny }
+            });
+          } else {
+            // 安全なセルを開く
+            dispatch({
+              type: 'REVEAL_CELL',
+              payload: { x: nx, y: ny }
+            });
+          }
+        }
+      }
+      
+      // 地雷を踏んだ場合はゲームオーバー
+      if (hitMine) {
+        setStatus(GameStatus.LOST);
+      }
+    }
+  }, [status, boardState.board, dispatch]); // dispatchを依存配列に追加
+
   // 残りの地雷数を計算（地雷総数 - フラグ数）
   const remainingMines = useMemo(() => {
     return Math.max(0, minesCount - boardState.flagsCount);
@@ -179,6 +249,7 @@ export function useGame(
     timer,
     revealCell,
     toggleFlag,
+    chordCell, // 追加: 中クリック処理関数
     resetGame: () => resetGame(),
     changeDifficulty
   };
