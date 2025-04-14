@@ -24,23 +24,39 @@ const GameResult: React.FC<GameResultProps> = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [animateClass, setAnimateClass] = useState('');
+  const [shouldDisplay, setShouldDisplay] = useState(false);
 
   // ゲーム状態に応じてモーダルの表示/非表示を制御
   useEffect(() => {
     if (status === GameStatus.WON || status === GameStatus.LOST) {
-      setIsVisible(true);
-      // アニメーションを遅延させて適用（モーダルが表示された後）
-      setTimeout(() => {
-        setAnimateClass('animate-fadeIn');
-      }, 100);
+      // ゲーム結果表示まで3秒待つ
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+        setShouldDisplay(true);
+        // アニメーションを遅延させて適用（モーダルが表示された後）
+        setTimeout(() => {
+          setAnimateClass('animate-fadeIn');
+        }, 50);
+      }, 300);
+      
+      return () => clearTimeout(timer);
     } else {
       setIsVisible(false);
       setAnimateClass('');
+      setShouldDisplay(false);
     }
   }, [status]);
 
+  // モーダルを閉じる処理
+  const handleClose = () => {
+    setAnimateClass('');
+    setTimeout(() => {
+      setIsVisible(false);
+    }, 200);
+  };
+
   // 表示しない場合はnullを返す
-  if (!isVisible) {
+  if (!shouldDisplay || !isVisible) {
     return null;
   }
 
@@ -91,7 +107,18 @@ const GameResult: React.FC<GameResultProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-md w-full mx-4 p-6 ${animateClass}`}>
+      <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-md w-full mx-4 p-6 relative ${animateClass}`}>
+        {/* 閉じるボタン */}
+        <button 
+          onClick={handleClose}
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          aria-label="モーダルを閉じる"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
         {/* ヘッダー部分 */}
         <div className="text-center mb-6">
           {status === GameStatus.WON ? (
