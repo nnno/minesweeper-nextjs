@@ -1,4 +1,4 @@
-import { BoardAction, BoardState, CellActionResult, SquareNode } from '../types';
+import { BoardAction, BoardState, CellActionResult } from '../types';
 import { checkWinCondition, countFlags, openCell, placeMinesOnBoard, revealAllMines } from '../utils/gameHelpers';
 
 /**

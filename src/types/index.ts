@@ -8,11 +8,13 @@
 
 /**
  * 座標インターフェース - グリッド形状に依存しない抽象インターフェース
- * 将来の拡張性のために、特定の実装に依存しない抽象インターフェースとして定義
+ * 将来の拡張性のために、特定の実装に依存しない抽象型として定義
  */
-export interface Coordinate {
-  // 実装に応じたプロパティが拡張される
-}
+// 修正: 空のインターフェースを型エイリアスに変更し、意味のあるプロパティを追加
+export type Coordinate = {
+  id: string; // 座標の一意識別子
+  type: string; // 座標タイプ（例: 'square', 'hex'など）
+};
 
 /**
  * 正方形グリッド用の座標実装
@@ -109,7 +111,7 @@ export interface IGrid<T extends INode> {
    * グリッドを生成
    * @param params グリッド生成に必要なパラメータ
    */
-  generateGrid(params: any): void;
+  generateGrid(params: unknown): void;
   
   /**
    * 地雷を配置

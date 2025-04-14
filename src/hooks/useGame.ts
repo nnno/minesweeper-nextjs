@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
-import { CellActionResult, Difficulty, GameSettings, GameStatus, SquareNode } from '../types';
+import { Difficulty, GameSettings, GameStatus, SquareNode } from '../types';
 import { DIFFICULTY_SETTINGS, checkWinCondition, createEmptyBoard } from '../utils/gameHelpers';
 import { boardReducer } from '../reducers/boardReducer';
 

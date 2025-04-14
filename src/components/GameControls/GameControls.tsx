@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import MineCounter from './MineCounter';
 import Timer from './Timer';
 import GameFace from './GameFace';

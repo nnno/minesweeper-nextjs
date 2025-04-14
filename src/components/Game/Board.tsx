@@ -16,28 +16,27 @@ interface BoardProps {
  * マインスイーパーのゲームボードを表示し、セルを配置
  */
 const Board: React.FC<BoardProps> = ({ board, difficulty, onRevealCell, onFlagCell, onChordCell }) => {
-  if (!board || board.length === 0) {
-    return <div className="text-center p-4">ボードが初期化されていません</div>;
-  }
-
-  const rows = board.length;
-  const cols = board[0].length;
+  // ボードが初期化されているかチェック
+  const isBoardInitialized = board && board.length > 0;
+  
+  // ボードが初期化されている場合のみ列数を取得
+  const cols = isBoardInitialized ? board[0].length : 0;
 
   // 難易度に応じたセルサイズを計算（メモ化）
   const cellSize = useMemo(() => {
     switch (difficulty) {
+      case Difficulty.CUSTOM:
+        return cols > 20 ? 'w-6 h-6 md:w-7 md:h-7' : 
+               cols > 16 ? 'w-7 h-7 md:w-8 md:h-8' : 
+               'w-8 h-8 md:w-10 md:h-10';
       case Difficulty.BEGINNER:
         return 'w-8 h-8 md:w-10 md:h-10';
       case Difficulty.INTERMEDIATE:
         return 'w-7 h-7 md:w-8 md:h-8';
       case Difficulty.EXPERT:
         return 'w-6 h-6 md:w-7 md:h-7';
-      case Difficulty.CUSTOM:
       default:
-        // カスタム難易度の場合はボードサイズに応じて動的に調整
-        return cols > 20 ? 'w-6 h-6 md:w-7 md:h-7' : 
-               cols > 16 ? 'w-7 h-7 md:w-8 md:h-8' : 
-               'w-8 h-8 md:w-10 md:h-10';
+        return 'w-8 h-8 md:w-10 md:h-10';
     }
   }, [difficulty, cols]);
 
@@ -67,6 +66,11 @@ const Board: React.FC<BoardProps> = ({ board, difficulty, onRevealCell, onFlagCe
     
     return `p-2 bg-gray-100 dark:bg-gray-800 rounded shadow-md ${sizeClass}`;
   }, [difficulty]);
+
+  // ボードが初期化されていない場合は早期リターン
+  if (!isBoardInitialized) {
+    return <div className="text-center p-4">ボードが初期化されていません</div>;
+  }
 
   return (
     <div 

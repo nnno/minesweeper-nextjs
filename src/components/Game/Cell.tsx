@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState, TouchEvent } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { SquareNode } from '@/types';
 
 // セルの色の設定
@@ -79,7 +79,7 @@ const Cell: React.FC<CellProps> = ({ cell, cellSize = 'w-8 h-8 md:w-10 md:h-10',
   }, [handleRightClick, handleMiddleClick]);
 
   // マウスアップイベントハンドラー
-  const handleMouseUp = useCallback((e: React.MouseEvent) => {
+  const handleMouseUp = useCallback(() => {
     setIsPressed(false);
   }, []);
 
@@ -111,7 +111,7 @@ const Cell: React.FC<CellProps> = ({ cell, cellSize = 'w-8 h-8 md:w-10 md:h-10',
   }, [isRevealed, onFlag, x, y]);
 
   // タッチ終了イベントハンドラー
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+  const handleTouchEnd = useCallback(() => {
     // タイマーをクリア
     if (touchTimeoutRef.current) {
       clearTimeout(touchTimeoutRef.current);
@@ -205,8 +205,7 @@ const Cell: React.FC<CellProps> = ({ cell, cellSize = 'w-8 h-8 md:w-10 md:h-10',
 
   // セルのスタイルを決定
   const getCellStyle = () => {
-    // 動的なセルサイズクラスを使用
-    let baseStyle = `flex items-center justify-center ${cellSize} select-none border border-gray-400 dark:border-gray-600 text-center transition-colors duration-150`;
+    const baseStyle = `flex items-center justify-center ${cellSize} select-none border border-gray-400 dark:border-gray-600 text-center transition-colors duration-150`;
     
     if (isRevealed) {
       if (isMine) {
