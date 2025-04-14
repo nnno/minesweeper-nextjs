@@ -3,6 +3,8 @@ import { useGameContext } from '@/contexts/GameContext';
 import { Difficulty, GameStatus } from '@/types';
 import Board from './Board';
 import GameControls from '../GameControls';
+import GameResult from './GameResult';
+import MineReveal from './MineReveal';
 
 /**
  * ゲームボードコンポーネント
@@ -13,9 +15,13 @@ const GameBoard: React.FC = () => {
     board,
     status,
     difficulty,
+    timer,
+    minesCount,
+    flagsCount,
     revealCell,
     toggleFlag,
-    chordCell
+    chordCell,
+    resetGame
   } = useGameContext();
 
   // 難易度に対応するボードサイズ情報を取得
@@ -55,6 +61,16 @@ const GameBoard: React.FC = () => {
     }
   }, []);
 
+  // ゲームがクリアしたかどうかの判定
+  const isGameFinished = useMemo(() => {
+    return status === GameStatus.WON || status === GameStatus.LOST;
+  }, [status]);
+
+  // リスタート処理
+  const handleRestart = useCallback(() => {
+    resetGame();
+  }, [resetGame]);
+
   return (
     <div className="flex flex-col items-center p-4 max-w-4xl mx-auto">
       {/* ゲーム情報エリア */}
@@ -74,7 +90,7 @@ const GameBoard: React.FC = () => {
 
       {/* ゲームボード - ラッパーを追加してレスポンシブデザインを強化 */}
       <div className="w-full overflow-auto flex justify-center">
-        <div className="min-w-min">
+        <div className="min-w-min relative">
           <Board
             board={board}
             difficulty={difficulty}
@@ -82,8 +98,27 @@ const GameBoard: React.FC = () => {
             onFlagCell={toggleFlag}
             onChordCell={chordCell}
           />
+          
+          {/* ゲーム終了時に地雷表示を追加 */}
+          {isGameFinished && (
+            <MineReveal 
+              board={board}
+              isGameLost={status === GameStatus.LOST}
+              difficulty={difficulty}
+            />
+          )}
         </div>
       </div>
+
+      {/* ゲーム結果モーダル */}
+      <GameResult
+        status={status}
+        difficulty={difficulty}
+        timer={timer}
+        flagsCount={flagsCount}
+        minesCount={minesCount}
+        onRestart={handleRestart}
+      />
 
       {/* 操作説明 */}
       <div className="mt-6 p-3 bg-gray-100 dark:bg-gray-800 rounded text-sm text-gray-700 dark:text-gray-300 w-full max-w-md">
