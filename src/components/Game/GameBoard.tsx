@@ -116,7 +116,7 @@ const GameBoard: React.FC = () => {
         difficulty={difficulty}
         timer={timer}
         flagsCount={flagsCount}
-        minesCount={minesCount + flagsCount}
+        minesCount={minesCount}
         onRestart={handleRestart}
       />
 
